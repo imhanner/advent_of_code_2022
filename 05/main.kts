@@ -1,13 +1,18 @@
+#!/usr/bin/kotlinc -script
+
 import java.io.File
 import java.util.Stack
 
 
-fun parseInput(filepath: String = "./input.txt"): Pair<Stacks, Moves> = File(filepath)
+fun parseInput(): Pair<Stacks, Moves> = File("./input.txt")
     .readLines()
     .let { lines ->
         lines.take(8).toStacks() to lines.subList(10, lines.size).map(::Move)
     }
 
+
+//region Stacks
+typealias Stacks = List<Stack<Char>>
 
 fun Stacks.perform(moves: Moves, shouldPrint: Boolean = false, performMoveBody: (Move) -> Unit) {
     if (shouldPrint) this.print()
@@ -21,12 +26,7 @@ fun Stacks.perform(moves: Moves, shouldPrint: Boolean = false, performMoveBody: 
     }
 }
 
-
 fun Stacks.topCrates() = joinToString("") { "${it.peek()}" }
-
-
-//region Stacks
-typealias Stacks = List<Stack<Char>>
 
 fun List<String>.toStacks(): Stacks {
     val bottomUp = this.reversed()
@@ -78,3 +78,36 @@ data class Move private constructor(
     }
 }
 //endregion
+
+
+Pair(
+    first = parseInput().let { (stacks: Stacks, moves: Moves) ->
+
+        stacks.perform(moves) { move ->
+            repeat(move.cratesCount) {
+                stacks[move.fromStackIndex]
+                    .pop()
+                    .run(stacks[move.toStackIndex]::push)
+            }
+        }
+
+        stacks.topCrates() // SHQWSRBDL
+    },
+
+    second = parseInput().let { (stacks: Stacks, moves: Moves) ->
+
+        stacks.perform(moves) { move ->
+            val crates = mutableListOf<Char>()
+
+            repeat(move.cratesCount) {
+                stacks[move.fromStackIndex]
+                    .pop()
+                    .run(crates::add)
+            }
+
+            stacks[move.toStackIndex].addAll(crates.reversed())
+        }
+
+        stacks.topCrates() // CDTQZHBRS
+    },
+)

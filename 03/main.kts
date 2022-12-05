@@ -10,10 +10,29 @@ fun priorityOf(item: Char): Int = item.code + when (item) {
     else -> TODO("Offset of item '$this'")
 }
 
+
 val rucksacks = File("./input.txt").readLines()
 
-(0 .. rucksacks.lastIndex / 3)
-    .map { groupIndex ->
+Pair(
+    first = rucksacks.map { line ->
+        val compartment = line.run {
+            val compartmentSize = length / 2
+
+            take(compartmentSize) to takeLast(compartmentSize)
+        }
+
+        for (item in compartment.first) {
+            compartment
+                .second
+                .firstOrNull { item == it }
+                ?.let { return@map priorityOf(it) }
+        }
+
+        TODO("No item in both compartments")
+    }
+    .sum(), // 7727
+
+    second = (0 .. rucksacks.lastIndex / 3).sumOf { groupIndex ->
         val groupOffset = groupIndex * 3
 
         val elve = Triple(
@@ -29,6 +48,5 @@ val rucksacks = File("./input.txt").readLines()
             .first()
 
         priorityOf(commonBadgeItem)
-    }
-    .onEach { require(it in 1 .. 52) }
-    .sum() // 2609
+    }, // 2609
+)
