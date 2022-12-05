@@ -8,14 +8,14 @@ fun String.toIntRange(): IntRange =
         .let { (start, end) -> start.toInt() .. end.toInt() }
 
 
-fun count(condition: (range: Pair<IntRange, IntRange>) -> Boolean): Int = File("./input.txt")
+fun count(condition: (IntRange, IntRange) -> Boolean): Int = File("./input.txt")
     .readLines()
     .map { line ->
-        val range = line
+        val ranges = line
             .split(",")
             .let { it[0].toIntRange() to it[1].toIntRange() }
 
-        if (condition(range))
+        if (condition(ranges.first, ranges.second))
             return@map 1
 
         return@map 0
@@ -24,20 +24,19 @@ fun count(condition: (range: Pair<IntRange, IntRange>) -> Boolean): Int = File("
 
 
 operator fun IntRange.contains(other: IntRange): Boolean =
-    (this.first <= other.first && other.last <= this.last) || (other.first <= this.first && this.last <= other.last)
+    other.first <= this.first && this.last <= other.last
 
 
-infix fun IntRange.overlap(other: IntRange): Boolean =
-    this.intersect(other)
-        .isNotEmpty()
+infix fun IntRange.overlapping(other: IntRange): Boolean =
+    this.intersect(other).isNotEmpty()
 
 
 Pair(
-    first = count { range ->
-        range.first in range.second
+    first = count { range1, range2 ->
+        range1 in range2 || range2 in range1
     }, // 584
 
-    second = count { range ->
-        range.first overlap range.second
+    second = count { range1, range2 ->
+        range1 overlapping range2
     } // 933
 )
