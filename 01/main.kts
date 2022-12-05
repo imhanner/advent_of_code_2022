@@ -19,16 +19,12 @@ val elvesCalories = buildList {
 
 
 Pair(
-    first = elvesCalories.reduce { currentlyHighestCalories, currentCalories ->
-        if (currentlyHighestCalories > currentCalories)
-            currentlyHighestCalories
-        else
-            currentCalories
-    }, // 66306
+    first = elvesCalories
+        .max(), // 66306
 
     second = elvesCalories
         .sorted()
         .takeLast(3)
-        .reduce(Int::plus), // 195292
+        .sum(), // 195292
 )
 
