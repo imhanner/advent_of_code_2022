@@ -28,23 +28,26 @@ fun Stacks.perform(moves: Moves, shouldPrint: Boolean = false, performMoveBody: 
 
 fun Stacks.topCrates() = joinToString("") { "${it.peek()}" }
 
+/**
+ * @receiver a top-down list of levels with possibly crates
+ * @return list of stacks of crates
+ */
 fun List<String>.toStacks(): Stacks {
     val bottomUp = this.reversed()
 
-    val stacks = mutableListOf<Stack<Char>>()
+    return buildList<Stack<Char>> {
+        repeat(9) { i ->
+            // create each stack
+            add(Stack<Char>())
 
-    repeat(9) { i ->
-
-        stacks.add(Stack<Char>())
-
-        for (level in bottomUp) {
-            level[4 * i + 1]
-                .takeIf { it in 'A' .. 'Z' }
-                ?.also { crate -> stacks[i].push(crate) }
+            // fill each stack
+            for (currentLevel in bottomUp) {
+                currentLevel[4 * i + 1]
+                    .takeIf { crate -> crate in 'A' .. 'Z' }
+                    ?.also { crate -> this[i].push(crate) }
+            }
         }
     }
-
-    return stacks
 }
 
 fun Stacks.print() {
@@ -97,15 +100,15 @@ Pair(
     second = parseInput().let { (stacks: Stacks, moves: Moves) ->
 
         stacks.perform(moves) { move ->
-            val crates = mutableListOf<Char>()
-
-            repeat(move.cratesCount) {
-                stacks[move.fromStackIndex]
-                    .pop()
-                    .run(crates::add)
+            val crates = buildList<Char> {
+                repeat(move.cratesCount) {
+                    stacks[move.fromStackIndex]
+                        .pop()
+                        .also { crate -> add(0, crate) }
+                }
             }
 
-            stacks[move.toStackIndex].addAll(crates.reversed())
+            stacks[move.toStackIndex].addAll(crates)
         }
 
         stacks.topCrates() // CDTQZHBRS
