@@ -36,8 +36,8 @@ fun moveAllyPoints(otherMove:String, outcome: String) = when (otherMove to outco
 File("./input.txt")
     .readLines()
     .map { line -> 
-        val (moveOppenent, outcome) = line.split(" ")
+        val (moveOpponent, outcome) = line.split(" ")
 
-        moveAllyPoints(moveOppenent, outcome) + outcome.toPoints()
+        moveAllyPoints(moveOpponent, outcome) + outcome.toPoints()
     }
     .sum() // 11618

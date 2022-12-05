@@ -33,8 +33,8 @@ fun String.toPoints() = when (this) {
 File("./input.txt")
     .readLines()
     .map { line -> 
-        val (moveOppenent, moveAlly) = line.split(" ")
+        val (moveOpponent, moveAlly) = line.split(" ")
 
-        moveAlly.toPoints() + (moveOppenent vs moveAlly)
+        moveAlly.toPoints() + (moveOpponent vs moveAlly)
     }
     .sum() // 12772
