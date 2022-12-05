@@ -22,4 +22,4 @@ mutableListOf<Int>()
             currentlyHighestCalories
         else
             currentCalories
-    }
+    } // 66306

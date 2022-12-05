@@ -19,4 +19,4 @@ mutableListOf<Int>()
     }
     .sorted()
     .takeLast(3)
-    .reduce(Int::plus)
+    .reduce(Int::plus) // 195292
